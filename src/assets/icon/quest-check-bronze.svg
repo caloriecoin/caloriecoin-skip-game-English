@@ -1,0 +1,33 @@
+<svg width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="69.182%" id="lhho2of3da">
+            <stop stop-color="#CF7F51" offset="0%"/>
+            <stop stop-color="#A66124" offset="32.378%"/>
+            <stop stop-color="#FFF0DF" offset="69.062%"/>
+            <stop stop-color="#B6690F" offset="100%"/>
+        </linearGradient>
+        <filter x="-2.7%" y="-2.7%" width="105.4%" height="105.4%" filterUnits="objectBoundingBox" id="9gvpnq1ekc">
+            <feGaussianBlur stdDeviation="1" in="SourceAlpha" result="shadowBlurInner1"/>
+            <feOffset dy="1" in="shadowBlurInner1" result="shadowOffsetInner1"/>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"/>
+            <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0" in="shadowInnerInner1" result="shadowMatrixInner1"/>
+            <feGaussianBlur stdDeviation=".5" in="SourceAlpha" result="shadowBlurInner2"/>
+            <feOffset in="shadowBlurInner2" result="shadowOffsetInner2"/>
+            <feComposite in="shadowOffsetInner2" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner2"/>
+            <feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" in="shadowInnerInner2" result="shadowMatrixInner2"/>
+            <feMerge>
+                <feMergeNode in="shadowMatrixInner1"/>
+                <feMergeNode in="shadowMatrixInner2"/>
+            </feMerge>
+        </filter>
+        <circle id="6to1zupt7b" cx="28" cy="28" r="28"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <g>
+            <use fill="url(#lhho2of3da)" xlink:href="#6to1zupt7b"/>
+            <use fill="#000" filter="url(#9gvpnq1ekc)" xlink:href="#6to1zupt7b"/>
+            <circle fill="#FFF" cx="28" cy="28" r="22"/>
+        </g>
+        <path d="M19.564 29.76c.995.75 1.375.856 2.207 1.991 1.36 1.854 1.16 2.622 1.564 2.975.404.353 2.253.639 3.514-.975 1.261-1.613 3.229-6.068 5.75-8.74 2.523-2.672 3.7-3.446 4.456-3.849.757-.403-1.64-.317-6.355 3.429-3.28 2.605-5.6 6.202-5.6 6.202s-.655-1.967-2.118-3.278c-1.463-1.31-5.07.996-3.418 2.244" fill="#2FA124"/>
+    </g>
+</svg>
