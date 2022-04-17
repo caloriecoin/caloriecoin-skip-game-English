@@ -32,9 +32,6 @@ build/
 local.properties
 *.iml
 
-#iOS
-ios/
-
 # node.js
 #
 node_modules/
