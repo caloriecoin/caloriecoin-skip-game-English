@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {Image} from 'react-native';
 
@@ -6,6 +6,10 @@ import DefaultProfile from '@/assets/icon/profile-default.svg';
 
 const Profile = ({profileURI, width, height, radius}) => {
     const [ isOnError, setIsOnError ] = useState(false);
+
+    useEffect(()=>{
+        if(profileURI == null) setIsOnError(true);
+    },[]);
 
     if(isOnError)
     {

@@ -16,7 +16,8 @@ import {
     CalorieCoinContractABI, 
     CalorieCoinContractAddress, 
     CalorieCoinPrivateKey, 
-    CalorieCoinAddress
+    CalorieCoinAddress,
+    CalorieCoinURL
 } from '@components/klaytn/CalorieCoinConnector'
 
 import RopeIcon from '@/assets/icon/rope.svg';
@@ -109,14 +110,22 @@ const Mining = ({navigation})=>{
 
     const transferCoin = async () => {
 
-        const web3 = new Web3(new Web3.providers.HttpProvider('https://api.baobab.klaytn.net:8651/'));
+        const web3 = new Web3(new Web3.providers.HttpProvider(CalorieCoinURL));
+
+        console.log(1);
 
         const calorieCoinContract = new web3.eth.Contract(CalorieCoinContractABI, CalorieCoinContractAddress);
 
-        const transferData = calorieCoinContract.methods.transfer(walletInfo.address,10000000).encodeABI();
+        console.log(2);
+        
+        const transferData = calorieCoinContract.methods.transfer(walletInfo.address,10).encodeABI();
 
+        console.log(3);
+        
         const accountTransactionNumber = await web3.eth.getTransactionCount(CalorieCoinAddress, 'latest');
 
+        console.log(4);
+        
         const networkGasPrice = await web3.eth.getGasPrice();
 
         console.log('networkGasPrice >> ', networkGasPrice);
@@ -124,7 +133,7 @@ const Mining = ({navigation})=>{
         const rawTransaction = {
             nonce: web3.utils.toHex(accountTransactionNumber),
             gasPrice: networkGasPrice,
-            gasLimit: web3.utils.toHex(3000000),
+            gasLimit: web3.utils.toHex(21000000),
             to: CalorieCoinContractAddress,
             value: 0,
             data: transferData
@@ -134,13 +143,13 @@ const Mining = ({navigation})=>{
 
         web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('confirmation', async (confirmationNumber, receipt)=>{
             
-            if(confirmationNumber == 3)
+            if(confirmationNumber == 1)
             {
                 saveTransactionOnLocalStorage(receipt);
                 
                 const balance = await calorieCoinContract.methods.balanceOf(walletInfo.address).call();
 
-                setBalance(web3.utils.fromWei(balance, 'mwei'));
+                setBalance(balance);
 
                 // get coin effect & sound
                 setShowEffect(true);
@@ -148,7 +157,7 @@ const Mining = ({navigation})=>{
                 getCoinSound.setVolume(1.0);
                 getCoinSound.play();
             }
-            else if(confirmationNumber == 5)
+            else if(confirmationNumber == 2)
             {
                 setShowEffect(false);
             }
@@ -158,17 +167,22 @@ const Mining = ({navigation})=>{
     useEffect(async ()=>{
         
         const web3 = new Web3(
-            new Web3.providers.HttpProvider('https://api.baobab.klaytn.net:8651/'),
+            new Web3.providers.HttpProvider(CalorieCoinURL),
           );
 
         const calorieCoinContract = new web3.eth.Contract(CalorieCoinContractABI, CalorieCoinContractAddress);
         
-        const balance = await calorieCoinContract.methods.balanceOf(walletInfo.address).call();
+        try{
+            const balance = await calorieCoinContract.methods.balanceOf(walletInfo.address).call();
 
-        setBalance(web3.utils.fromWei(balance, 'mwei'));
-
-        setJumpCount(0);
-
+            console.log('mybalance >> ', balance);
+            setBalance(balance);
+    
+            setJumpCount(0);    
+        }catch(err){
+            console.log(err);
+        }
+   
         return () => {
             console.log('end mining');
             overMiningSound.release();

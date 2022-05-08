@@ -8,9 +8,7 @@ import CoinImage from '@/assets/image/coin_logo.png';
 import BackIcon from '@/assets/icon/back.svg';
 
 import Web3 from 'web3';
-import {CalorieCoinContractABI, CalorieCoinContractAddress} from '@components/klaytn/CalorieCoinConnector'
-
-import { commaText } from '@/util/CommonUtil';
+import {CalorieCoinContractABI, CalorieCoinContractAddress, CalorieCoinURL} from '@components/klaytn/CalorieCoinConnector'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -23,7 +21,7 @@ const WalletView = ({navigation}) => {
     const [currentTx, setCurrentTx] = useState(null);
 
     const web3 = new Web3(
-        new Web3.providers.HttpProvider('https://api.baobab.klaytn.net:8651/'),
+        new Web3.providers.HttpProvider(CalorieCoinURL),
     );
 
     const {walletInfo} = useSelector(({user}) => ({
@@ -35,7 +33,7 @@ const WalletView = ({navigation}) => {
         
         const balance = await calorieCoinContract.methods.balanceOf(walletInfo.address).call();
 
-        setBalance(web3.utils.fromWei(balance, 'mwei'));
+        setBalance(balance);
     };
 
     useEffect(async ()=>{
@@ -43,7 +41,7 @@ const WalletView = ({navigation}) => {
         
         const balance = await calorieCoinContract.methods.balanceOf(walletInfo.address).call();
 
-        setBalance(web3.utils.fromWei(balance, 'mwei'));
+        setBalance(balance);
 
         const data = await AsyncStorage.getItem('transactionList');
 
@@ -83,22 +81,22 @@ const WalletView = ({navigation}) => {
                     <View style={{backgroundColor:'#eee', borderRadius:14, padding : 8, marginTop:8, marginBottom:8}}>
                         <View style={{flexDirection:'row', marginBottom:8, marginTop:8}}>
                             <Text style={{fontFamily:'SUIT-Regular', marginRight:'auto'}}>Maximum gas</Text>
-                            <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && commaText(web3.utils.hexToNumber(currentTx.gas))}</Text>
+                            {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && commaText(web3.utils.hexToNumber(currentTx.gas))}</Text> */}
                         </View>
                         
                         <View style={{flexDirection:'row', marginBottom:8}}>
                             <Text style={{fontFamily:'SUIT-Regular', marginRight:'auto'}}>Gas fee</Text>
-                            <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && web3.utils.fromWei(web3.utils.hexToNumberString(currentTx.gasPrice), 'gwei')} <Text style={{color:'#999'}}>STON</Text></Text>
+                            {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && web3.utils.fromWei(web3.utils.hexToNumberString(currentTx.gasPrice), 'gwei')} <Text style={{color:'#999'}}>STON</Text></Text> */}
                         </View>
 
                         <View style={{flexDirection:'row', marginBottom:8}}>
                             <Text style={{fontFamily:'SUIT-Regular', marginRight:'auto'}}>Used gas</Text>
-                            <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && commaText(currentTx.gasUsed)}</Text>
+                            {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && commaText(currentTx.gasUsed)}</Text> */}
                         </View>
                         
                         <View style={{flexDirection:'row', marginBottom:8}}>
                             <Text style={{fontFamily:'SUIT-Regular', marginRight:'auto'}}>Transaction fee</Text>
-                            <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && web3.utils.fromWei(web3.utils.hexToNumberString(currentTx.gasUsed * currentTx.gasPrice), 'ether')} <Text style={{color:'#999'}}>KLAY</Text></Text>
+                            {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && web3.utils.fromWei(web3.utils.hexToNumberString(currentTx.gasUsed * currentTx.gasPrice), 'ether')} <Text style={{color:'#999'}}>KLAY</Text></Text> */}
                         </View>
                     </View>
                     

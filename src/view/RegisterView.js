@@ -15,6 +15,10 @@ import CharacterFeMale from '@/assets/image/character-female.png';
 
 import Web3 from 'web3';
 
+import {
+    CalorieCoinURL
+} from '@components/klaytn/CalorieCoinConnector';
+
 const RegisterView = ({callBack}) => {
     
     const [isOpen, setIsOpen] = useState(false);
@@ -28,15 +32,13 @@ const RegisterView = ({callBack}) => {
     
     const dispatch = useDispatch();
 
-    console.log(userInfo);
-
     useEffect(()=>{
         setGender(userInfo.gender);
     },[]);
 
     const handleRegister = async () => {
 
-        const web3 = new Web3(new Web3.providers.HttpProvider('https://api.baobab.klaytn.net:8651/'));
+        const web3 = new Web3(new Web3.providers.HttpProvider(CalorieCoinURL));
 
         const account = web3.eth.accounts.create();
 

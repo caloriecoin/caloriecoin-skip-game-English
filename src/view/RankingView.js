@@ -32,7 +32,7 @@ const RankingView = ({navigation}) => {
                     value:item.mined_caloriecoins_total,
                     unit:'CAL',
                     subtitle:'',
-                    description:`Jump rope count : ${item.jumps_total}`
+                    description:`count : ${item.jumps_total}`
                 });
             });
             
@@ -55,7 +55,7 @@ const RankingView = ({navigation}) => {
                     value:item.battle_rating,
                     unit:'',
                     subtitle:'rating : ',
-                    description:`${item.win_battles}승 ${item.loose_battles}패 ${item.draw_battles}무`
+                    description:`${item.win_battles}win ${item.loose_battles}lose ${item.draw_battles}draw`
                 });
             });
 

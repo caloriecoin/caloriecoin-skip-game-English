@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "879653988026",
+    "project_id": "caloriecoin-347813",
+    "storage_bucket": "caloriecoin-347813.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879653988026:android:a89e7bd80c796e90c24483",
+        "android_client_info": {
+          "package_name": "com.bledemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879653988026-aencpdj7anrv35kjkko2jus2pt8sfgno.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bledemo",
+            "certificate_hash": "9e79efce65f6cf25a5194cfeb4ec3c2c9bf13012"
+          }
+        },
+        {
+          "client_id": "879653988026-gej2icvdptk6l1p12paph8q109v9nhul.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bledemo",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDYD6nemAvAJ0bLbOc2HIPWnv7HpOFIn0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,15 +17,15 @@ const MiningHistoryBox = ({history, item}) =>{
     return <View style={styles.container}>
         <View style={styles.topContainer}>
             <Text style={styles.datetime}>{format(selector.timestamp,'yyyy/MM/dd  HH:mm')}</Text>
-            <Text style={styles.modeText}>Mining Mode</Text>
+            <Text style={styles.modeText}>Normal Mode</Text>
         </View>
         <View>
             <View style={{flexDirection:'row'}}>
-                <IconDataBox title="Mined Calorie Coins" value={selector?.mined_caloriecoins} unit="CAL" icon={<Image source={CoinImage} style={{width:16,height:16}}/>}/>
+                <IconDataBox title="Mined CAL" value={selector?.mined_caloriecoins} unit="CAL" icon={<Image source={CoinImage} style={{width:16,height:16}}/>}/>
                 <IconDataBox title="Number of Jumps" value={selector?.jumps} unit="jumps" icon={<RopeIcon/>}/>
             </View>
             <View style={{flexDirection:'row'}}>
-                <IconDataBox title="Calorie Consumption" value={selector?.burned_kcalories} unit="Kcal" icon={<CalorieIcon/>} />
+                <IconDataBox title="Burned Calorie" value={selector?.burned_kcalories} unit="Kcal" icon={<CalorieIcon/>} />
                 <IconDataBox title="Exercise Time" value={getSecondToString(selector?.duration_time)} icon={<TimerIcon/>}/>
             </View>
         </View>

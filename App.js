@@ -57,8 +57,67 @@ const App = ({ navigation }) => {
   }
   else if(loading >= 1.0 && !isLogin)
   {
-    return <LoginView clickHandler={()=>{
+    return<LoginView isLogin={async (token)=>{
+      
       setLoadLogin(true);
+
+      if(token)
+      {
+        const data = await axios.get('https://graph.facebook.com/v2.5/me?fields=email,name&access_token=' + token);
+
+        console.log(data.data);
+
+        const userData = data.data;
+
+        if(userData)
+        {
+          const callUserData = await axios.get(`https://caloriecoin.herokuapp.com/api/user/getUserAndWallet/${userData.id}`);
+          
+          const user = callUserData.data.user;
+          const wallet = callUserData.data.userWallet;
+          
+          if(wallet)
+          {
+            dispatch(updateUserWallet({
+              address:wallet.address,
+              privateKey:wallet.privateKey
+            }));
+
+            if(user)
+            {
+              dispatch(updateUser({
+                id: user.kakaoId,
+                nickname: user.nickname,
+                profileURL: user.profile,
+                gender: user.gender,
+                weight: user.weight,
+                height: user.height,
+                birthday: user.birthday
+              }));
+
+              setIsRegister(true);
+            }
+          }
+          else
+          {
+            dispatch(updateUser({
+              id: userData.id,
+              nickname: userData.name,
+              profileURL: null,
+              gender: 'male',
+              birthday: '2000-01-01'
+            }));
+          }
+        }
+        setIsLogin(true);
+        setLoadLogin(false);
+      }
+      else
+      {
+        setLoadLogin(false);
+      }
+    }}
+    clickHandler={()=>{
       RNKakaoLogins.login().then(response=>{
         RNKakaoLogins.getProfile().then(async response=>{
           if(response)

@@ -89,7 +89,6 @@ const GameView = ({navigation}) => {
                             battleResult=2;
                         }
                     }
-                    else totalDrawCount++;
 
                     tempBattleHistory.push({
                         id: index,

@@ -215,7 +215,7 @@ const HistoryView = ({navigation}) => {
             </TouchableOpacity>
         </View>
         {type === 'battle' &&<View style={{flex:1, width:'100%', justifyContent:'center', alignItems:'center',marginTop:48}}>
-            <Text><Text style={{color:'#fc5a5a', fontFamily:'SUIT-Heavy', fontSize:28}}>{battleTotalWinCount}</Text><Text style={{color:'#9ea4a9', fontFamily:'SUIT-Regular', fontSize:14}}>  승</Text><Text style={{color:'#0062ff', fontFamily:'SUIT-Heavy', fontSize:28}}>    {battleTotalLoseCount}</Text><Text style={{color:'#9ea4a9', fontFamily:'SUIT-Regular', fontSize:14}}>  패</Text><Text style={{color:'#000', fontFamily:'SUIT-Heavy', fontSize:28}}>    {battleTotalDrawCount}</Text><Text style={{color:'#9ea4a9', fontFamily:'SUIT-Regular', fontSize:14}}>  무</Text></Text>
+            <Text><Text style={{color:'#fc5a5a', fontFamily:'SUIT-Heavy', fontSize:28}}>{battleTotalWinCount}</Text><Text style={{color:'#9ea4a9', fontFamily:'SUIT-Regular', fontSize:14}}>  win</Text><Text style={{color:'#0062ff', fontFamily:'SUIT-Heavy', fontSize:28}}>    {battleTotalLoseCount}</Text><Text style={{color:'#9ea4a9', fontFamily:'SUIT-Regular', fontSize:14}}>  lose</Text><Text style={{color:'#000', fontFamily:'SUIT-Heavy', fontSize:28}}>    {battleTotalDrawCount}</Text><Text style={{color:'#9ea4a9', fontFamily:'SUIT-Regular', fontSize:14}}>  draw</Text></Text>
             <FlatList
                 data={battleHistoryList}
                 renderItem={BattleHistoryBox}

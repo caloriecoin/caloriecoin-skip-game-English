@@ -5,6 +5,7 @@ import Web3 from 'web3';
 import {
   CalorieCoinContractABI,
   CalorieCoinContractAddress,
+  CalorieCoinURL
 } from '@components/klaytn/CalorieCoinConnector';
 
 import {
@@ -21,7 +22,7 @@ import BattleModeBackgroundImage from '@/assets/image/img-vs.png';
 const BattleModeTile = ({navigation}) => {
   const balanceOf = async () => {
     const web3 = new Web3(
-      new Web3.providers.HttpProvider('https://api.baobab.klaytn.net:8651/'),
+      new Web3.providers.HttpProvider(CalorieCoinURL),
     );
 
     const calorieCoinContract = new web3.eth.Contract(
@@ -33,7 +34,7 @@ const BattleModeTile = ({navigation}) => {
       .balanceOf(walletInfo.address)
       .call();
 
-    return web3.utils.fromWei(balance, 'mwei');
+    return balance;
   };
 
   const {walletInfo} = useSelector(({user}) => ({

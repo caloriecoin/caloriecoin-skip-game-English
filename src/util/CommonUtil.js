@@ -68,6 +68,7 @@ export const saveTransactionOnLocalStorage = (tx) => {
 
 export const commaText = (num) =>
 {
+    if(!num) return "0";
     var regexp = /\B(?=(\d{3})+(?!\d))/g;
     return num.toString().replace(regexp, ',');
 }

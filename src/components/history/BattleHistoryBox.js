@@ -12,7 +12,7 @@ const BattleHistoryBox = ({history, item}) =>{
         <View style={styles.topContainer}>
             <Text style={styles.datetime}>{format(slector?.timestamp,'yyyy/MM/dd  HH:mm')}</Text>
             <Text style={styles.scoreWrap}><Text style={{color:'#ff2c4b'}}>{slector?.myScore}</Text> : <Text style={{color:'#005fff'}}>{slector?.targetScore}</Text></Text>
-            <Text style={slector?.battleResult == 0 ? styles.drawText : slector?.battleResult == 1 ? styles.winnerText: styles.loserText}>{slector?.battleResult == 0 ? 'draws' : slector?.battleResult == 1 ? 'wins' : 'loses'}</Text>
+            <Text style={slector?.battleResult == 0 ? styles.drawText : slector?.battleResult == 1 ? styles.winnerText: styles.loserText}>{slector?.battleResult == 0 ? 'draw' : slector?.battleResult == 1 ? 'win' : 'lose'}</Text>
         </View>
         <View style={styles.bottomCotainer}>
             <DefaultProfile width={36} height={36}/>
@@ -52,13 +52,13 @@ const styles = StyleSheet.create({
         fontSize:16
     },
     scoreWrap:{
-        flex:4,
+        flex:3.5,
         fontFamily:'SUIT-Heavy',
         color:'#888',
         fontSize:24
     },
     winnerText:{
-        flex:1,
+        flex:1.5,
         fontFamily:'SUIT-Bold',
         color:'white',
         backgroundColor:'#ff2c4b',
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         fontSize:12
     },
     loserText:{
-        flex:1,
+        flex:1.5,
         fontFamily:'SUIT-Bold',
         color:'white',
         backgroundColor:'#005fff',
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         fontSize:12
     },
     drawText:{
-        flex:1,
+        flex:1.5,
         fontFamily:'SUIT-Bold',
         color:'white',
         backgroundColor:'#17171f',

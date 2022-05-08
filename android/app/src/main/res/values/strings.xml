@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CalorieCoin</string>
     <string name="kakao_app_key">b2ede31772223c303670f701758197ef</string>
+    <string name="facebook_app_id">398906341859577</string>
+    <string name="fb_login_protocol_scheme">caloriecoin</string>
+    <string name="facebook_client_token">001a5fb24491443dc73a7df947b9dd7d</string>
 </resources>

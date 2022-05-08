@@ -22,7 +22,8 @@ import {
     CalorieCoinContractABI, 
     CalorieCoinContractAddress, 
     CalorieCoinPrivateKey, 
-    CalorieCoinAddress
+    CalorieCoinAddress,
+    CalorieCoinURL
 } from '@components/klaytn/CalorieCoinConnector';
 import { saveTransactionOnLocalStorage } from '@/util/CommonUtil';
 
@@ -184,7 +185,7 @@ const Battle = ({navigation}) =>{
                     },1000);    
                 },1000);
 
-                setHeaderLeftMessage(`In 1:1 Battle with ${targetInfo.nickname} `)
+                setHeaderLeftMessage(`In 1:1 Battle with ${targetInfo?.nickname} `)
 
                 setTargetInfo(targetInfo);
             });
@@ -192,11 +193,10 @@ const Battle = ({navigation}) =>{
             // Game Start
             socket.on('START_GAME', ()=>{
                 // Partner Joined
-                setGameStatus('Play');
+                setGameStatus('play');
                 setSubTitle("");
                 setMainTitle("Start !!");
 
-                setHeaderLeftMessage(`In 1:1 Battle with ${targetInfo.nickname} `)
                 playGame();
 
                 battleSound.setVolume(0.8);
@@ -268,7 +268,7 @@ const Battle = ({navigation}) =>{
 
     const transferCoin = async () => {
 
-        const web3 = new Web3(new Web3.providers.HttpProvider('https://api.baobab.klaytn.net:8651/'));
+        const web3 = new Web3(new Web3.providers.HttpProvider(CalorieCoinURL));
 
         const calorieCoinContract = new web3.eth.Contract(CalorieCoinContractABI, CalorieCoinContractAddress);
 
@@ -278,8 +278,8 @@ const Battle = ({navigation}) =>{
 
         const rawTransaction = {
             nonce: web3.utils.toHex(accountTransactionNumber),
-            gasPrice: 25000000000,
-            gasLimit: web3.utils.toHex(3000000),
+            gasPrice: 10000000000,
+            gasLimit: web3.utils.toHex(21000000),
             to: CalorieCoinContractAddress,
             value: 0,
             data: transferData
@@ -289,13 +289,13 @@ const Battle = ({navigation}) =>{
 
         web3.eth.sendSignedTransaction(signedTx.rawTransaction).on('confirmation', async (confirmationNumber, receipt)=>{
             
-            if(confirmationNumber == 3)
+            if(confirmationNumber == 1)
             {
                 saveTransactionOnLocalStorage(receipt);
                 
                 const balance = await calorieCoinContract.methods.balanceOf(walletInfo.address).call();
 
-                setBalance(web3.utils.fromWei(balance, 'mwei'));
+                setBalance(balance);
 
                 // get coin effect & sound
                 setShowEffect(true);
@@ -303,7 +303,7 @@ const Battle = ({navigation}) =>{
                 getCoinSound.setVolume(1.0);
                 getCoinSound.play();
             }
-            else if(confirmationNumber == 5)
+            else if(confirmationNumber == 2)
             {
                 setShowEffect(false);
             }
@@ -367,10 +367,10 @@ const Battle = ({navigation}) =>{
         <LinearGradient colors={['#2c1b2b','#464652']} style={styles.ground}>
             <View style={{flex:1, flexDirection:'row', justifyContent:'center'}}>
                 <View style={{top:0, marginTop:-350, left:0}}>
-                    <Player nickname={userInfo.nickname} gender={userInfo.gender} subtitle="나" isPlay={gameStatus === 'play'}/>
+                    <Player nickname={userInfo.nickname} gender={userInfo.gender} subtitle="me" isPlay={gameStatus === 'play'}/>
                 </View>
                 <View style={{top:0, marginTop:-350, marginLeft:30}}>
-                    <Player nickname={targetInfo != null ? targetInfo.nickname : ''} gender={targetInfo != null ? targetInfo.gender : ''} subtitle="Opponent" disabled={targetInfo === null ? true : false} isPlay={gameStatus === 'play'}/>
+                    <Player nickname={targetInfo != null ? targetInfo?.nickname : ''} gender={targetInfo != null ? targetInfo.gender : ''} subtitle="Opponent" disabled={targetInfo === null ? true : false} isPlay={gameStatus === 'play'}/>
                 </View>
             </View>
             {gameStatus === 'play' && <BattleProgressBar myScore={myJump} targetScore={targetJump}/>}
