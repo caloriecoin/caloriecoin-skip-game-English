@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">CalorieCoin</string>
+    <string name="server_client_id">1038105975230–1ap7l76fge28tqe8jub07ph22uj54i7p.apps.googleusercontent.com</string>
     <string name="kakao_app_key">b2ede31772223c303670f701758197ef</string>
     <string name="facebook_app_id">398906341859577</string>
     <string name="fb_login_protocol_scheme">caloriecoin</string>
