@@ -165,7 +165,11 @@ const Mining = ({navigation}) => {
       .contract()
       .at('TK6XHBYhqjFnDNKrgBy4YRX8seHiMxUHo8');
 
-    await calorieCoin.methods.transfer(toAddress, '10000000').send();
+    const txHash = await calorieCoin.methods
+      .transfer(toAddress, '10000000')
+      .send();
+
+    saveTransactionOnLocalStorage(txHash);
 
     await callTronAccount();
 
@@ -182,6 +186,8 @@ const Mining = ({navigation}) => {
     } catch (err) {
       console.log(err);
     }
+
+    transferCoin();
 
     return () => {
       console.log('end mining');

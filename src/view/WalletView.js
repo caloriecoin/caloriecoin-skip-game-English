@@ -20,12 +20,16 @@ import TronWeb from 'tronweb';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {commaText} from '../util/CommonUtil';
+
 const WalletView = ({navigation}) => {
   const [balance, setBalance] = useState(0);
   const [txList, setTxList] = useState([]);
 
   const [modalView, setModalView] = useState(false);
   const [currentTx, setCurrentTx] = useState(null);
+
+  const [currentTxDetail, setCurrentTxDetail] = useState(null);
 
   const {walletInfo} = useSelector(({user}) => ({
     walletInfo: user.wallet,
@@ -79,13 +83,28 @@ const WalletView = ({navigation}) => {
     if (data) {
       const jsonData = JSON.parse(data);
 
-      console.log(jsonData.transactionList);
-
       if (jsonData?.transactionList?.length > 0) {
         setTxList(jsonData.transactionList);
       }
     }
   }, []);
+
+  useEffect(async () => {
+    if (currentTx) {
+      console.log(currentTx);
+
+      const webProvider = TronWeb.providers.HttpProvider;
+      const fullNode = new webProvider('https://nile.trongrid.io');
+      const solidityNode = new webProvider('https://nile.trongrid.io');
+      const eventServer = new webProvider('https://nile.trongrid.io');
+      const pk = walletInfo.privateKey.substring(2);
+      const tronWeb = new TronWeb(fullNode, solidityNode, eventServer, pk);
+
+      const currentTxInfo = await tronWeb.trx.getTransactionInfo(currentTx);
+
+      setCurrentTxDetail(currentTxInfo);
+    }
+  }, [currentTx]);
 
   return (
     <View
@@ -128,7 +147,7 @@ const WalletView = ({navigation}) => {
               Block height
             </Text>
             <Text style={{fontFamily: 'SUIT-Regular', fontSize: 16}}>
-              # {currentTx && currentTx.blockNumber}
+              # {currentTxDetail && currentTxDetail.blockNumber}
             </Text>
 
             <Text
@@ -143,7 +162,7 @@ const WalletView = ({navigation}) => {
             <Text
               numberOfLines={1}
               style={{fontFamily: 'SUIT-Regular', fontSize: 16, width: '90%'}}>
-              {currentTx && currentTx.from}
+              {currentTxDetail && currentTxDetail.contract_address}
             </Text>
 
             <Text
@@ -158,7 +177,10 @@ const WalletView = ({navigation}) => {
             <Text
               numberOfLines={1}
               style={{fontFamily: 'SUIT-Regular', fontSize: 16, width: '90%'}}>
-              {currentTx && currentTx.to}
+              {walletInfo.address &&
+                TronWeb.address.fromPrivateKey(
+                  walletInfo.privateKey.substring(2),
+                )}
             </Text>
 
             <Text
@@ -181,30 +203,32 @@ const WalletView = ({navigation}) => {
               <View
                 style={{flexDirection: 'row', marginBottom: 8, marginTop: 8}}>
                 <Text style={{fontFamily: 'SUIT-Regular', marginRight: 'auto'}}>
-                  Maximum gas
+                  Energy Fee
                 </Text>
-                {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && commaText(web3.utils.hexToNumber(currentTx.gas))}</Text> */}
+                <Text style={{fontFamily: 'SUIT-Bold', marginLeft: 'auto'}}>
+                  {currentTxDetail &&
+                    commaText(currentTxDetail.receipt.energy_fee)}
+                </Text>
               </View>
 
               <View style={{flexDirection: 'row', marginBottom: 8}}>
                 <Text style={{fontFamily: 'SUIT-Regular', marginRight: 'auto'}}>
-                  Gas fee
+                  Energy Usage Total
                 </Text>
-                {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && web3.utils.fromWei(web3.utils.hexToNumberString(currentTx.gasPrice), 'gwei')} <Text style={{color:'#999'}}>STON</Text></Text> */}
+                <Text style={{fontFamily: 'SUIT-Bold', marginLeft: 'auto'}}>
+                  {currentTxDetail &&
+                    commaText(currentTxDetail.receipt.energy_usage_total)}
+                </Text>
               </View>
 
               <View style={{flexDirection: 'row', marginBottom: 8}}>
                 <Text style={{fontFamily: 'SUIT-Regular', marginRight: 'auto'}}>
-                  Used gas
+                  Net Usage
                 </Text>
-                {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && commaText(currentTx.gasUsed)}</Text> */}
-              </View>
-
-              <View style={{flexDirection: 'row', marginBottom: 8}}>
-                <Text style={{fontFamily: 'SUIT-Regular', marginRight: 'auto'}}>
-                  Transaction fee
+                <Text style={{fontFamily: 'SUIT-Bold', marginLeft: 'auto'}}>
+                  {currentTxDetail &&
+                    commaText(currentTxDetail.receipt.net_usage)}
                 </Text>
-                {/* <Text style={{fontFamily:'SUIT-Bold', marginLeft:'auto'}}>{currentTx && web3.utils.fromWei(web3.utils.hexToNumberString(currentTx.gasUsed * currentTx.gasPrice), 'ether')} <Text style={{color:'#999'}}>KLAY</Text></Text> */}
               </View>
             </View>
 
@@ -216,7 +240,7 @@ const WalletView = ({navigation}) => {
                 style={{marginTop: 18}}
                 onPress={() => {
                   Linking.openURL(
-                    `https://baobab.scope.klaytn.com/tx/${currentTx.transactionHash}`,
+                    `https://nile.tronscan.org/#/transaction/${currentTx}`,
                   );
                 }}>
                 <Text
@@ -224,11 +248,11 @@ const WalletView = ({navigation}) => {
                     padding: 12,
                     textAlign: 'center',
                     fontFamily: 'SUIT-Bold',
-                    backgroundColor: '#585C8A',
+                    backgroundColor: '#c23631',
                     borderRadius: 8,
                     color: 'white',
                   }}>
-                  Open on KlaytnScope
+                  Open on TRONSCAN (NILE)
                 </Text>
               </TouchableOpacity>
             )}
@@ -264,7 +288,7 @@ const WalletView = ({navigation}) => {
           Balance :{' '}
         </Text>
         <Image source={CoinImage} style={{width: 18, height: 18}} />
-        <Text style={styles.value}>{balance} CAL</Text>
+        <Text style={styles.value}>{balance && commaText(balance)} CAL</Text>
       </View>
       <Text style={{fontFamily: 'SUIT-Bold', fontSize: 22, color: 'black'}}>
         Transaction list
@@ -289,22 +313,20 @@ const WalletView = ({navigation}) => {
                 setCurrentTx(item);
               }}>
               <View style={{marginRight: 'auto'}}>
-                <Text style={{marginRight: 'auto', fontFamily: 'SUIT-Bold'}}>
-                  # {item.blockNumber}
-                </Text>
                 <Text
                   numberOfLines={1}
                   style={{
-                    width: '35%',
+                    width: '30%',
                     fontFamily: 'SUIT-Regular',
+                    fontSize: 18,
                     marginTop: 8,
                   }}>
-                  Tx Hash | {item.transactionHash}
+                  {item}
                 </Text>
               </View>
               <View style={{marginLeft: 'auto'}}>
-                <Text style={{fontFamily: 'SUIT-Bold', fontSize: 24}}>
-                  + 10
+                <Text style={{fontFamily: 'SUIT-Bold', fontSize: 20}}>
+                  + 10 CAL
                 </Text>
               </View>
             </TouchableOpacity>

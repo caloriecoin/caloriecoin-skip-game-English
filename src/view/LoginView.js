@@ -21,12 +21,13 @@ import BackgroundImage from '@/assets/image/login_background.png';
 import KakaoIcon from '@/assets/icon/kakaotalk_icon.svg';
 import FacebookIcon from '@/assets/icon/facebook_icon.svg';
 import GoogleIcon from '@/assets/icon/google-icon.svg';
+import GitHubIcon from '@/assets/image/github-logo.png';
 
 const LoginView = ({clickHandler, isLogin}) => {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        '1038105975230-1ap7l76fge28tqe8jub07ph22uj54i7p.apps.googleusercontent.com',
+        '879653988026-78f2h0anqje9d3p7d0s8d5edooo4k9ub.apps.googleusercontent.com',
     });
     // GoogleSignin.configure({webClientId:'1:879653988026:android:a89e7bd80c796e90c24483'});
   }, []);
@@ -124,6 +125,12 @@ const LoginView = ({clickHandler, isLogin}) => {
           {/*    <FacebookIcon width={22} height={22} fill={'white'}/>*/}
           {/*    <Text style={{fontSize:18, marginLeft:24, color : 'white'}}>Facebook Login</Text>*/}
           {/*</TouchableOpacity>*/}
+          <TouchableOpacity style={styles.GitHubLoginBtn}>
+            <Image source={GitHubIcon} style={{width: 18, height: 18}} />
+            <Text style={{fontSize: 18, marginLeft: 42, color: 'black'}}>
+              GitHub Login
+            </Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.kakaoTalkLoginBtn}
             onPress={() => {
@@ -173,6 +180,16 @@ const styles = StyleSheet.create({
   },
   kakaoTalkIcon: {
     backgroundColor: '#3A1D1D',
+  },
+  GitHubLoginBtn: {
+    marginTop: 20,
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 14,
+    borderRadius: 8,
+    width: '60%',
   },
   kakaoTalkLoginBtn: {
     marginTop: 20,

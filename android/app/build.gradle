@@ -191,6 +191,8 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:30.3.0')
+    
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
 
