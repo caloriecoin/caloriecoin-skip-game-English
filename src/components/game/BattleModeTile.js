@@ -1,12 +1,7 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 
-import Web3 from 'web3';
-import {
-  CalorieCoinContractABI,
-  CalorieCoinContractAddress,
-  CalorieCoinURL
-} from '@components/klaytn/CalorieCoinConnector';
+import TronWeb from 'tronweb';
 
 import {
   ImageBackground,
@@ -20,26 +15,30 @@ import Toast from 'react-native-toast-message';
 import BattleModeBackgroundImage from '@/assets/image/img-vs.png';
 
 const BattleModeTile = ({navigation}) => {
-  const balanceOf = async () => {
-    const web3 = new Web3(
-      new Web3.providers.HttpProvider(CalorieCoinURL),
-    );
-
-    const calorieCoinContract = new web3.eth.Contract(
-      CalorieCoinContractABI,
-      CalorieCoinContractAddress,
-    );
-
-    const balance = await calorieCoinContract.methods
-      .balanceOf(walletInfo.address)
-      .call();
-
-    return balance;
-  };
-
   const {walletInfo} = useSelector(({user}) => ({
     walletInfo: user.wallet,
   }));
+
+  const balanceOf = async () => {
+    const webProvider = TronWeb.providers.HttpProvider;
+    const fullNode = new webProvider('https://nile.trongrid.io');
+    const solidityNode = new webProvider('https://nile.trongrid.io');
+    const eventServer = new webProvider('https://nile.trongrid.io');
+    const pk = walletInfo.privateKey.substring(2);
+    const tronWeb = new TronWeb(fullNode, solidityNode, eventServer, pk);
+
+    const address = tronWeb.address.fromPrivateKey(pk);
+
+    const calorieCoin = await tronWeb
+      .contract()
+      .at('TK6XHBYhqjFnDNKrgBy4YRX8seHiMxUHo8');
+
+    const resp = await calorieCoin.methods.balanceOf(address).call();
+
+    const data = JSON.parse(resp);
+
+    return data / 1000000;
+  };
 
   return (
     <TouchableOpacity

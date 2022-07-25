@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {View, Text, Image, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
+
+import TronWeb from 'tronweb';
 
 import axios from 'axios';
 
@@ -14,166 +16,190 @@ import MiningHistoryBox from '@components/history/MiningHistoryBox';
 
 import FloatingButton from '@components/common/FloatingButton';
 
-
 const GameView = ({navigation}) => {
-   
-    const [battleHistory, setBattleHistory] = useState(null);
-    const [miningHistory, setMiningHistory] = useState(null);
-    
-    const {userInfo, walletInfo} = useSelector(({user}) => ({
-        userInfo: user.info,
-        walletInfo: user.wallet
-    }));
+  const [battleHistory, setBattleHistory] = useState(null);
+  const [miningHistory, setMiningHistory] = useState(null);
 
-    useEffect(async ()=>{
+  const {userInfo, walletInfo} = useSelector(({user}) => ({
+    userInfo: user.info,
+    walletInfo: user.wallet,
+  }));
 
-        const responseBattle = await axios.get('https://caloriecoin.herokuapp.com/api/battleJump/getOneUserBattleJumps/' + userInfo.id);
-        
-        const tempBattleHistory = [];
-        setBattleHistory([]);
+  const getTronAddress = useCallback(() => {
+    const webProvider = TronWeb.providers.HttpProvider;
+    const fullNode = new webProvider('https://nile.trongrid.io');
+    const solidityNode = new webProvider('https://nile.trongrid.io');
+    const eventServer = new webProvider('https://nile.trongrid.io');
+    const pk = walletInfo.privateKey.substring(2);
+    const tronWeb = new TronWeb(fullNode, solidityNode, eventServer, pk);
 
-        if(responseBattle)
-        {
-            const data = responseBattle.data;
+    return tronWeb.address.fromPrivateKey(pk);
+  }, [walletInfo]);
 
-            if(data)
-            {
-                data?.BattleJumps?.map((item,index)=>{
-                    let owner = null;
-                    let target = null;
-                    if(item.player1_kakaoId === userInfo.id)
-                    {
-                        // owner id = p1
-                        owner = {
-                            id: item.player1_kakaoId,
-                            nickname: item.player1_nickname,
-                            profile: item.player1_profile,
-                            jumps: item.player1_jumps,
-                        };
+  useEffect(async () => {
+    const responseBattle = await axios.get(
+      'https://caloriecoin.herokuapp.com/api/battleJump/getOneUserBattleJumps/' +
+        userInfo.id,
+    );
 
-                        target = {
-                            id: item.player2_kakaoId,
-                            nickname: item.player2_nickname,
-                            profile: item.player2_profile,
-                            jumps: item.player2_jumps,
-                        };
-                    }
-                    else
-                    {
-                        // owner id = p2
-                        target = {
-                            id: item.player1_kakaoId,
-                            nickname: item.player1_nickname,
-                            profile: item.player1_profile,
-                            jumps: item.player1_jumps,
-                        };
+    const tempBattleHistory = [];
+    setBattleHistory([]);
 
-                        owner = {
-                            id: item.player2_kakaoId,
-                            nickname: item.player2_nickname,
-                            profile: item.player2_profile,
-                            jumps: item.player2_jumps,
-                        };
-                    }
+    if (responseBattle) {
+      const data = responseBattle.data;
 
-                    let battleResult = 0;
-                    
-                    if(!item.isDraw)
-                    {
-                        if(owner.jumps > target.jumps)
-                        {
-                            battleResult=1;
-                        }
-                        else 
-                        {
-                            battleResult=2;
-                        }
-                    }
+      if (data) {
+        data?.BattleJumps?.map((item, index) => {
+          let owner = null;
+          let target = null;
+          if (item.player1_kakaoId === userInfo.id) {
+            // owner id = p1
+            owner = {
+              id: item.player1_kakaoId,
+              nickname: item.player1_nickname,
+              profile: item.player1_profile,
+              jumps: item.player1_jumps,
+            };
 
-                    tempBattleHistory.push({
-                        id: index,
-                        timestamp: new Date(item.createdAt),
-                        myScore: owner.jumps,
-                        targetScore: target.jumps,
-                        battleResult: battleResult,
-                        targetInfo: target
-                    });
-                });
+            target = {
+              id: item.player2_kakaoId,
+              nickname: item.player2_nickname,
+              profile: item.player2_profile,
+              jumps: item.player2_jumps,
+            };
+          } else {
+            // owner id = p2
+            target = {
+              id: item.player1_kakaoId,
+              nickname: item.player1_nickname,
+              profile: item.player1_profile,
+              jumps: item.player1_jumps,
+            };
+
+            owner = {
+              id: item.player2_kakaoId,
+              nickname: item.player2_nickname,
+              profile: item.player2_profile,
+              jumps: item.player2_jumps,
+            };
+          }
+
+          let battleResult = 0;
+
+          if (!item.isDraw) {
+            if (owner.jumps > target.jumps) {
+              battleResult = 1;
+            } else {
+              battleResult = 2;
             }
-            
-            tempBattleHistory.sort((a,b)=>b.timestamp-a.timestamp);
+          }
 
-            setBattleHistory(tempBattleHistory);
-        }
+          tempBattleHistory.push({
+            id: index,
+            timestamp: new Date(item.createdAt),
+            myScore: owner.jumps,
+            targetScore: target.jumps,
+            battleResult: battleResult,
+            targetInfo: target,
+          });
+        });
+      }
 
+      tempBattleHistory.sort((a, b) => b.timestamp - a.timestamp);
 
-        const response = await axios.get('https://caloriecoin.herokuapp.com/api/minningJump/getOneUserMinningJumps/' + userInfo.id);
-        const tempMiningHistory = [];
-        setMiningHistory([]);
+      setBattleHistory(tempBattleHistory);
+    }
 
-        if(response)
-        {
-            const data = response.data;
+    const response = await axios.get(
+      'https://caloriecoin.herokuapp.com/api/minningJump/getOneUserMinningJumps/' +
+        userInfo.id,
+    );
+    const tempMiningHistory = [];
+    setMiningHistory([]);
 
-            if(data?.MinningJumps)
-            {
-                data.MinningJumps.map((item, index)=>{
-                    tempMiningHistory.push({
-                        id:index,
-                        timestamp: new Date(item.createdAt),
-                        jumps: item.jumps,
-                        mined_caloriecoins: item.mined_caloriecoins,
-                        duration_time: item.duration_time,
-                        burned_kcalories: item.burned_kcalories
-                    });
-                });
-            }
-        }
+    if (response) {
+      const data = response.data;
 
-        tempMiningHistory.sort((a, b)=>a.timestamp < b.timestamp);
+      if (data?.MinningJumps) {
+        data.MinningJumps.map((item, index) => {
+          tempMiningHistory.push({
+            id: index,
+            timestamp: new Date(item.createdAt),
+            jumps: item.jumps,
+            mined_caloriecoins: item.mined_caloriecoins,
+            duration_time: item.duration_time,
+            burned_kcalories: item.burned_kcalories,
+          });
+        });
+      }
+    }
 
-        setMiningHistory(tempMiningHistory);
+    tempMiningHistory.sort((a, b) => a.timestamp < b.timestamp);
 
-    },[]);
+    setMiningHistory(tempMiningHistory);
+  }, []);
 
-    return (
-    <View style={{flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'white'}}>
-        <View style={styles.profile}>
-            <Image source={{uri:userInfo.profileURL}} style={{width:84, height:84, borderRadius:42}}onError={(error)=>{console.log(error)}}/>
+  return (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+      }}>
+      <View style={styles.profile}>
+        <Image
+          source={{uri: userInfo.profileURL}}
+          style={{width: 84, height: 84, borderRadius: 42}}
+          onError={error => {
+            console.log(error);
+          }}
+        />
+      </View>
+      <Text style={styles.nickname}>{userInfo.nickname}</Text>
+      <WalletProfile address={getTronAddress()} />
+      <View style={styles.modeTileContainer}>
+        <MiningModeTile navigation={navigation} />
+        <BattleModeTile navigation={navigation} />
+      </View>
+      {battleHistory?.length > 0 && (
+        <View style={{width: '80%'}}>
+          <BattleHistoryBox history={battleHistory[0]} />
         </View>
-        <Text style={styles.nickname}>{userInfo.nickname}</Text>
-        <WalletProfile address={walletInfo.address} />
-        <View style={styles.modeTileContainer}>
-            <MiningModeTile navigation={navigation}/>
-            <BattleModeTile navigation={navigation}/>
+      )}
+      {miningHistory?.length > 0 && (
+        <View style={{width: '80%'}}>
+          <MiningHistoryBox history={miningHistory[0]} />
         </View>
-        { battleHistory?.length > 0 && <View style={{width:'80%'}}><BattleHistoryBox history={battleHistory[0]}/></View> }
-        { miningHistory?.length > 0 && <View style={{width:'80%'}}><MiningHistoryBox history={miningHistory[0]}/></View>}
-        <FloatingButton handleClick={()=>{
-            navigation.navigate('wallet_view');
-        }}/>
-    </View>);
+      )}
+      <FloatingButton
+        handleClick={() => {
+          navigation.navigate('wallet_view');
+        }}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    profile:{
-        borderWidth:2,
-        borderStyle:'solid',
-        borderColor:'#ff3348',
-        borderRadius:50,
-        padding:4,
-    },
-    nickname: {
-        marginTop:12,
-        fontFamily:'SUIT-SemiBold',
-        fontSize:22
-    },
-    modeTileContainer:{
-        flexDirection:'row',
-        justifyContent:'center',
-        alignItems:'center',
-        margin:'auto'
-    }
+  profile: {
+    borderWidth: 2,
+    borderStyle: 'solid',
+    borderColor: '#ff3348',
+    borderRadius: 50,
+    padding: 4,
+  },
+  nickname: {
+    marginTop: 12,
+    fontFamily: 'SUIT-SemiBold',
+    fontSize: 22,
+  },
+  modeTileContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 'auto',
+  },
 });
 
 export default GameView;

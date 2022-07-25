@@ -70,7 +70,9 @@ const LoginView = ({clickHandler, isLogin}) => {
       const userInfo = await GoogleSignin.signIn();
       console.log(userInfo, userInfo?.idToken);
 
-      const googleCredential = auth.GoogleAuthProvider.credential(userInfo?.idToken);
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo?.idToken,
+      );
       auth().signInWithCredential(googleCredential);
 
       auth().onAuthStateChanged(onAuthStateChanged);
